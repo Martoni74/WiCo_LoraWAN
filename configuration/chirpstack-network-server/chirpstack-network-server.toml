@@ -1,0 +1,111 @@
+# See https://www.chirpstack.io/network-server/install/config/ for a full
+# configuration example and documentation.
+#
+# This file is for the EU868 band. See the examples/ folder for more
+# configuration examples.
+
+[postgresql]
+dsn="postgres://chirpstack_ns:chirpstack_ns@postgresql/chirpstack_ns?sslmode=disable"
+
+[redis]
+url="redis://redis:6379"
+
+[network_server]
+net_id="000000"
+
+[network_server.band]
+name="EU868"
+
+[network_server.network_settings]
+
+  [[network_server.network_settings.extra_channels]]
+  frequency=867100000
+  min_dr=0
+  max_dr=5
+
+  [[network_server.network_settings.extra_channels]]
+  frequency=867300000
+  min_dr=0
+  max_dr=5
+
+  [[network_server.network_settings.extra_channels]]
+  frequency=867500000
+  min_dr=0
+  max_dr=5
+
+  [[network_server.network_settings.extra_channels]]
+  frequency=867700000
+  min_dr=0
+  max_dr=5
+
+  [[network_server.network_settings.extra_channels]]
+  frequency=867900000
+  min_dr=0
+  max_dr=5
+
+[network_server.gateway.backend.mqtt]
+server="tcp://mosquitto:1883"
+
+[join_server.default]
+server="http://chirpstack-application-server:8003"
+
+ # Monitoring settings.
+  #
+  # Note that this replaces the metrics configuration. If a metrics section is
+  # found in the configuration, then it will fall back to that and the monitoring
+  # section is ignored.
+[monitoring]
+  # Prometheus metrics endpoint.
+  #
+  # When set true, Prometheus metrics will be served at '/metrics'.
+  prometheus_endpoint=true
+
+  # Health check endpoint.
+  #
+  # When set to true, the healthcheck endpoint will be served at '/health'.
+  # When requesting, this endpoint will perform the following actions to
+  # determine the health of this service:
+  #   * Ping PostgreSQL database
+  #   * Ping Redis database
+  healthcheck_endpoint=true
+
+
+  # Device frame-log max history.
+  #
+  # When set to a value > 0, ChirpStack Network Server will log all uplink and
+  # downlink frames associated to a device as a Redis stream for the
+  # consumption by external applications (e.g. for monitoring purposes) Note
+  # that only uplinks passing the MIC and frame-counter tests will be published.
+  # The configured value will be used as approximate amount of frames which
+  # will be kept in the stream.
+  #
+  # The following Redis key is used:
+  # 'lora:ns:device:stream:frame'
+  device_frame_log_max_history=0
+
+  # Per device frame-log max history.
+  #
+  # Equal to the device_frame_log_max_history, but it has the device DevEUI
+  # in the Redis key. This feature is used by the ChirpStack Application Server
+  # web-interface.
+  per_device_frame_log_max_history=10
+
+  # Gateway frame-log max history.
+  #
+  # When set to a value > 0, ChirpStack Network Server will log all uplink and
+  # downlink frames received by the gateways as a Redis stream  for the
+  # consumption by external applications (e.g. for monitoring purposes). Note
+  # that all data reported by the gateways will be published.
+  # The configured value will be used as approximate amount of frames which
+  # will be kept in the stream.
+  #
+  # The following Redis key is used:
+  # 'lora:ns:gw:stream:frame'
+  gateway_frame_log_max_history=0
+
+  # Per gateway frame-log max history.
+  #
+  # Equal to the gateway_frame_log_max_history, but it has the GatewayID
+  # in the Redis key. This feature is used by the ChirpStack Application Server
+  # web-interface.
+  per_gateway_frame_log_max_history=10
